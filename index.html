@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>D-AI | Dutkyobot</title>
+    <title>QuickMod | Dutkyobot</title>
 
-    <link rel="icon" href="img/favicon.png" type="image/png">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%9B%A1%EF%B8%8F%3C/text%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -263,17 +263,12 @@
             <div id="header-content">
                 <a href="index.html" class="flex items-center space-x-2.5">
                     <div class="w-8 h-8 rounded-[0.5rem] gradient-brand flex items-center justify-center">
-                        <img
-                            src="img/icon.png"
-                            alt="D-AI"
-                            class="h-5 w-5 rounded"
-                        >
+                        <i class="fas fa-shield-halved text-white text-sm" aria-hidden="true"></i>
                     </div>
-                    <span class="text-lg font-bold tracking-tight text-ink">D-AI</span>
+                    <span class="text-lg font-bold tracking-tight text-ink">QuickMod</span>
                 </a>
 
                 <div class="flex items-center gap-4 sm:gap-6">
-                    <a href="#web" class="text-sm font-semibold text-mute hover:text-ink transition-colors">D-AI Web</a>
                     <a
                         href="https://discord.gg/AdM4hFZkrE"
                         target="_blank"
@@ -283,7 +278,7 @@
                         서포트 서버
                     </a>
                     <a
-                        href="https://buly.kr/3NKsbdE"
+                        href="https://discord.com/oauth2/authorize?client_id=1566306130194599948&amp;scope=bot%20applications.commands&amp;permissions=1099511712772"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="invite-btn hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-discord text-white text-sm font-semibold shadow-sm"
@@ -309,7 +304,7 @@
     <footer class="py-9 border-t border-line mt-auto">
         <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row justify-center sm:justify-between items-center text-mute text-sm gap-4">
             <div class="flex items-center gap-2">
-                <span class="font-bold text-ink">D-AI</span>
+                <span class="font-bold text-ink">QuickMod</span>
                 <span>&copy; 2026. All Rights Reserved.</span>
             </div>
 
@@ -325,21 +320,8 @@
 
 
     <script>
-    /* ==========================================================
-       공통 유틸
-    ========================================================== */
-    var REDUCE_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    function sleep(ms) {
-        return new Promise(function (resolve) {
-            setTimeout(resolve, REDUCE_MOTION ? 0 : ms);
-        });
-    }
-
-    /* ==========================================================
-       1) 헤더: 스크롤 위치에 따라 플로팅 스타일 전환
-    ========================================================== */
-    function initHeader() {
+    /* 헤더: 스크롤 위치에 따라 플로팅 스타일 전환 */
+    (function () {
         var header = document.getElementById("site-header");
         if (!header) return;
 
@@ -350,245 +332,7 @@
             },
             { passive: true }
         );
-    }
-
-    /* ==========================================================
-       2) 히어로 예시 대화 (실제 봇 응답 형식을 그대로 재현)
-          -# {emoji} {model} · ⚡ {time}s | {tool}
-    ========================================================== */
-    var HERO_TIMING = {
-        AFTER_USER_MSG: 700,
-        THINKING: 1100,
-        HOLD_ANSWER: 3400,
-        FADE_OUT: 400,
-    };
-
-    // 실제 봇 코드(router 예시 + Gemini → OpenRouter → Groq fallback)에 존재하는 조합만 사용
-    var HERO_EXAMPLES = [
-        {
-            user: "@D-AI 마인크래프트 더무비가 올바른 이름 맞아?",
-            answer: '네, 정식 명칭은 "마인크래프트: 더 무비"가 맞아요. 2025년에 개봉한 실사 영화예요.',
-            model: "Gemini 2.5 Flash",
-            dotClass: "bg-mint",
-            time: "1.2s",
-            tool: { icon: "fa-magnifying-glass", label: "Search" },
-        },
-        {
-            user: "@D-AI 지금 뉴욕 몇 시야?",
-            answer: "지금 뉴욕은 오전 8시 42분이에요.",
-            model: "Gemini 2.5 Flash",
-            dotClass: "bg-mint",
-            time: "0.6s",
-            tool: { icon: "fa-clock", label: "Time" },
-        },
-        {
-            user: "@D-AI 이 파이썬 코드 왜 자꾸 인덱스 에러나?",
-            answer: "리스트 범위를 벗어난 인덱스에 접근하고 있어요. range(len(items))로 반복 범위를 맞춰보세요.",
-            model: "Groq · Qwen3.6 27B",
-            dotClass: "bg-blue",
-            time: "0.9s",
-            tool: null,
-        },
-        {
-            user: "@D-AI 오늘 서울 날씨 어때?",
-            answer: "오늘 서울은 대체로 맑고 낮 최고기온은 27도로 예상돼요.",
-            model: "Gemini 2.5 Flash",
-            dotClass: "bg-mint",
-            time: "0.8s",
-            tool: { icon: "fa-magnifying-glass", label: "Search" },
-        },
-        {
-            user: "@D-AI 손흥민 최근 경기 결과 알려줘",
-            answer: "가장 최근 경기에서 선발로 출전해 팀 승리에 기여했어요. 자세한 스코어가 궁금하면 말해줘요.",
-            model: "Groq · Qwen3.6 27B",
-            dotClass: "bg-blue",
-            time: "0.5s",
-            tool: { icon: "fa-magnifying-glass", label: "Search" },
-        },
-        {
-            user: "@D-AI 1부터 100까지 더하면?",
-            answer: "1부터 100까지 더하면 5050이에요.",
-            model: "OpenRouter",
-            dotClass: "bg-blue",
-            time: "0.4s",
-            tool: null,
-        },
-    ];
-
-    function initHeroChat() {
-        var wrap = document.getElementById("mock-wrap");
-        var userTextEl = document.getElementById("mock-user-text");
-        var botBodyEl = document.getElementById("mock-bot-body");
-        var botFooterEl = document.getElementById("mock-bot-footer");
-
-        if (!wrap || !userTextEl || !botBodyEl || !botFooterEl) return;
-
-        // 실제 답변 각주 형식 재현: {점} {모델} · ⚡ {시간}s | {도구}
-        function renderFooter(example) {
-            var toolHtml = example.tool
-                ? ' | <i class="fas ' + example.tool.icon + ' text-[10px]"></i> ' + example.tool.label
-                : "";
-
-            botFooterEl.innerHTML =
-                '<span class="w-1.5 h-1.5 rounded-full ' + example.dotClass + ' inline-block mr-0.5"></span>' +
-                example.model +
-                ' <span class="text-line">·</span> ' +
-                '<i class="fas fa-bolt text-[var(--c-amber)] text-[10px]"></i> ' + example.time +
-                toolHtml;
-        }
-
-        function playExample(example) {
-            userTextEl.textContent = "";
-            botBodyEl.textContent = "";
-            botFooterEl.innerHTML = "";
-            userTextEl.textContent = example.user;
-
-            return sleep(HERO_TIMING.AFTER_USER_MSG)
-                .then(function () {
-                    botBodyEl.textContent = "🧠 생각 중...";
-                    return sleep(HERO_TIMING.THINKING);
-                })
-                .then(function () {
-                    botBodyEl.textContent = example.answer;
-                    renderFooter(example);
-                    return sleep(HERO_TIMING.HOLD_ANSWER);
-                });
-        }
-
-        function loop(index) {
-            wrap.style.opacity = "1";
-
-            playExample(HERO_EXAMPLES[index]).then(function () {
-                var nextIndex = (index + 1) % HERO_EXAMPLES.length;
-
-                if (REDUCE_MOTION) {
-                    loop(nextIndex);
-                    return;
-                }
-
-                wrap.style.opacity = "0";
-                setTimeout(function () {
-                    loop(nextIndex);
-                }, HERO_TIMING.FADE_OUT);
-            });
-        }
-
-        loop(0);
-    }
-
-    /* ==========================================================
-       3) 폴백 릴레이 다이어그램
-    ========================================================== */
-    var FALLBACK_TIMING = {
-        TRY_NODE: 1000,
-        AFTER_FAIL: 700,
-        LINE_PASS: 600,
-        HOLD_SUCCESS: 3500,
-    };
-
-    // 무작위 대신 고정 패턴으로 순환: 6회 중 4회는 Gemini 직행(실제 비율에 가깝게),
-    // 나머지 2회는 각각 OpenRouter / Groq까지 진행하는 장면을 보장한다.
-    var FALLBACK_SEQUENCE = [0, 0, 1, 0, 0, 2];
-
-    function initFallbackDiagram() {
-        var nodes = [0, 1, 2].map(function (i) {
-            return {
-                box: document.getElementById("fb-node-" + i),
-                status: document.getElementById("fb-status-" + i),
-                label: document.getElementById("fb-text-" + i),
-            };
-        });
-        var lines = [0, 1].map(function (i) {
-            return document.getElementById("fb-line-" + i);
-        });
-
-        if (!nodes[0].box) return;
-
-        var sequenceIndex = 0;
-
-        function nextTargetIdx() {
-            var idx = FALLBACK_SEQUENCE[sequenceIndex % FALLBACK_SEQUENCE.length];
-            sequenceIndex++;
-            return idx;
-        }
-
-        function resetAll() {
-            nodes.forEach(function (node) {
-                node.box.className = "w-14 h-14 rounded-3xl bg-surface border border-line flex items-center justify-center transition-all duration-300";
-                node.status.className = "text-[10px] text-mute transition-colors";
-                node.status.textContent = "대기";
-                if (node.label) {
-                    node.label.className = "font-bold text-mute text-sm transition-colors";
-                }
-            });
-            lines.forEach(function (line) {
-                if (line) line.classList.remove("line-active");
-            });
-        }
-
-        function markRunning(node) {
-            node.box.classList.add("node-running");
-            node.status.textContent = "시도 중...";
-            node.status.className = "text-[10px] text-blue font-medium transition-colors";
-            if (node.label) node.label.className = "font-bold text-ink text-sm transition-colors";
-        }
-
-        function markSuccess(node) {
-            node.box.classList.add("node-success");
-            node.status.textContent = "성공!";
-            node.status.className = "text-[10px] text-mint font-bold transition-colors";
-        }
-
-        function markFailed(node) {
-            node.box.classList.add("node-failed");
-            node.status.textContent = "실패 (오류)";
-            node.status.className = "text-[10px] text-red-400 font-semibold transition-colors";
-        }
-
-        function step(i, targetIdx) {
-            if (i >= nodes.length) return Promise.resolve();
-
-            var node = nodes[i];
-            markRunning(node);
-
-            return sleep(FALLBACK_TIMING.TRY_NODE).then(function () {
-                node.box.classList.remove("node-running");
-
-                if (i === targetIdx) {
-                    markSuccess(node);
-                    return sleep(FALLBACK_TIMING.HOLD_SUCCESS);
-                }
-
-                markFailed(node);
-                return sleep(FALLBACK_TIMING.AFTER_FAIL)
-                    .then(function () {
-                        var line = lines[i];
-                        if (!line) return;
-                        line.classList.add("line-active");
-                        return sleep(FALLBACK_TIMING.LINE_PASS);
-                    })
-                    .then(function () {
-                        var line = lines[i];
-                        if (line) line.classList.remove("line-active");
-                        return step(i + 1, targetIdx);
-                    });
-            });
-        }
-
-        function runCycle() {
-            resetAll();
-            step(0, nextTargetIdx()).then(runCycle);
-        }
-
-        runCycle();
-    }
-
-    /* ==========================================================
-       초기화
-    ========================================================== */
-    initHeader();
-    initHeroChat();
-    initFallbackDiagram();
+    })();
     </script>
 
 </body>
